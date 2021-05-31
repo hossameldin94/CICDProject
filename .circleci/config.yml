@@ -1,7 +1,31 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.4.2
            
 jobs:
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
+          
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -50,6 +74,7 @@ jobs:
               npm i
               npm install
               npm build
+              npm install oauth-sign
               npm run test
                 
   test-backend:
@@ -109,3 +134,5 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+      - notify:
+          context: udapeople
