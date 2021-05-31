@@ -48,6 +48,8 @@ jobs:
           command: |
               cd frontend
               npm i
+              npm install
+              npm build
               npm run test
                 
   test-backend:
