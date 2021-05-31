@@ -5,10 +5,10 @@
   "description": "A frontend boilerplate with React, Redux and Typescript",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest -w 1",
     "test:watch": "jest --watch",
     "pretest:cov": "npm run lint",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest -w 1 --coverage",
     "start": "webpack-dev-server --mode development --hot --progress --color --port 3000 --open",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "build:prod": "webpack -p --progress --colors",
