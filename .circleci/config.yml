@@ -43,6 +43,7 @@ jobs:
       - run:
           name: Build front-end
           command: |
+            cd frontend
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
@@ -58,6 +59,7 @@ jobs:
       - run:
           name: Back-end build
           command: |
+             cd backend
              npm run build
       - save_cache:
           paths: [backend/node_modules]
@@ -67,39 +69,51 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run:
+          name: test-frontend
+          command: |
+              cd frontend
+              npm audit --audit-level=critical
                 
   test-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run:
+          name: test-backend
+          command: |
+              cd backend
+              npm audit --audit-level=critical
             
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      # Docker image here
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run:
+          name: test-backend
+          command: |
 
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      # Docker image here
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run:
+          name: test-backend
+          command: |
 
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -133,7 +147,7 @@ jobs:
     docker:
       # Docker image here that supports Ansible
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
       # attach workspace
       - run:
@@ -152,7 +166,7 @@ jobs:
     docker:
       # Docker image here that supports NodeJS
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Run migrations
           command: |
@@ -169,7 +183,7 @@ jobs:
     docker:
       # Docker image here that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -190,7 +204,7 @@ jobs:
     docker:
       # Docker image here that supports Ansible
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
       # attach workspace
       - run:
@@ -207,7 +221,7 @@ jobs:
     docker:
       # Lightweight Docker image 
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -230,7 +244,7 @@ jobs:
     docker:
       # Docker image here that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
@@ -245,7 +259,7 @@ cleanup:
     docker:
       # Docker image here
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Get old stack workflow id
           command: |
