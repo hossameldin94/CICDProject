@@ -1,5 +1,6 @@
 version: 2.1
 
+           
 jobs:
   build-frontend:
     docker:
@@ -57,15 +58,6 @@ jobs:
               cd backend
               npm audit --audit-level=critical
             
-  scan-frontend:
-    docker:
-      # Docker image here
-    steps:
-      - checkout
-      - restore_cache
-      - run:
-          name: test-backend
-          command: |
 
 workflows:
   default:
