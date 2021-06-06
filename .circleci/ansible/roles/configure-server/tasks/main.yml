@@ -12,6 +12,9 @@
     update_cache: yes
 
 - name: "Add env"
+  hosts: all
+  user: ubuntu
+  gather_facts: False
   environment:
     NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
     VERSION: "{{ lookup('env','VERSION') }}"
