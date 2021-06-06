@@ -246,3 +246,5 @@ workflows:
             - udapeople
       - run-migrations:
           requires: [configure-infrastructure]
+          context:
+            - udapeople
