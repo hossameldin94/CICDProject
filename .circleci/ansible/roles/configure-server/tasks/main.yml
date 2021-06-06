@@ -11,17 +11,17 @@
     state: latest
     update_cache: yes
     
-- name: "Install env variables"
-  become: true
-  environment:
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: postgres
-    TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
-    TYPEORM_HOST: circleciprod.cx0zwqwoxj01.us-east-1.rds.amazonaws.com
-    TYPEORM_PORT: 5432
-    TYPEORM_USERNAME: postgres
-    TYPEORM_PASSWORD: circleci123
-    TYPEORM_DATABASE: circleciprod
+- name: Get env file content
+  shell: . /root/project/.circleci/backend/.env && env
+  register: env_file_result
+
+- name: Parse environment
+  set_fact:
+    env_vars: "{{ ('{' + env_file_result.stdout_lines | map('regex_replace', '([^=]*)=(.*)', '\"\\1\": \"\\2\"') | join(',') + '}') | from_json }}"
+
+- name: Display environment variables
+  command: env
+  environment: "{{ env_vars }}"
 
 - name: "install pm2"
   become: true
