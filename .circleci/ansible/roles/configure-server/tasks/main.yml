@@ -10,18 +10,21 @@
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
-    
-- name: Get env file content
-  shell: . ./root/project/backend/.env && env
-  register: env_file_result
 
-- name: Parse environment
-  set_fact:
-    env_vars: "{{ ('{' + env_file_result.stdout_lines | map('regex_replace', '([^=]*)=(.*)', '\"\\1\": \"\\2\"') | join(',') + '}') | from_json }}"
-
-- name: Display environment variables
-  command: env
-  environment: "{{ env_vars }}"
+- name: "Add env"
+  user: ubuntu
+  gather_facts: false
+  environment:
+    NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
+    VERSION: "{{ lookup('env','VERSION') }}"
+    ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}" 
+    TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
+    TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
+    TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
+    TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
+    TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
+    TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
+    TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
 
 - name: "install pm2"
   become: true
