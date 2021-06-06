@@ -160,15 +160,13 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicIpAddress'
-            aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
-            - .circleci/ansible/inventory.txt
+            - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure  
 
   configure-infrastructure:
@@ -200,6 +198,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
+            cd backend
             npm run migrations
             echo "has been done successfully" > result.txt
       - run:
