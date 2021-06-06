@@ -172,6 +172,17 @@ jobs:
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
+        environment:
+          NODE_ENV: "local"
+          VERSION: "1"
+          ENVIRONMENT: "production" 
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
       - checkout
       - add_ssh_keys:
@@ -185,18 +196,6 @@ jobs:
       - run:
           name: Configure server
           command: |
-            pwd
-            echo "NODE_ENV=local" >> backend/.env
-            echo "VERSION=1" >> backend/.env
-            echo ENVIRONMENT=production >> backend/.env
-            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> backend/.env
-            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> backend/.env
-            echo TYPEORM_HOST=$TYPEORM_HOST >> backend/.env
-            echo TYPEORM_PORT=$TYPEORM_PORT >> backend/.env
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> backend/.env
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> backend/.env
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> backend/.env
-            cat backend/.env
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure   
   run-migrations:
