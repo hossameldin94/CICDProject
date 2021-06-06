@@ -185,6 +185,7 @@ jobs:
       - run:
           name: Configure server
           command: |
+            pwd
             echo "NODE_ENV=local" >> backend/.env
             echo "VERSION=1" >> backend/.env
             echo ${ENVIRONMENT} >> backend/.env
@@ -195,6 +196,7 @@ jobs:
             echo ${TYPEORM_USERNAME} >> backend/.env
             echo ${TYPEORM_PASSWORD} >> backend/.env
             echo ${TYPEORM_DATABASE} >> backend/.env
+            cat backend/.env
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure   
   run-migrations:
