@@ -12,8 +12,6 @@
     update_cache: yes
 
 - name: "Add env"
-  user: ubuntu
-  gather_facts: false
   environment:
     NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
     VERSION: "{{ lookup('env','VERSION') }}"
