@@ -11,22 +11,6 @@
     state: latest
     update_cache: yes
 
-- name: "Add env"
-  hosts: all
-  user: ubuntu
-  gather_facts: False
-  environment:
-    NODE_ENV: "{{ lookup('env','NODE_ENV') }}"
-    VERSION: "{{ lookup('env','VERSION') }}"
-    ENVIRONMENT: "{{ lookup('env','ENVIRONMENT') }}" 
-    TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
-    TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
-    TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
-    TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
-    TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
-
 - name: "install pm2"
   become: true
   npm:
