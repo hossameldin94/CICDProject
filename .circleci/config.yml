@@ -185,9 +185,6 @@ jobs:
       - run:
           name: Configure server
           command: |
-            pwd
-            ls /root/project/.circleci/ansible/
-            cat /root/project/.circleci/ansible/inventory.txt
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure   
   run-migrations:
@@ -199,6 +196,8 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            npm i
+            npm run build
             npm run migrations
             echo "has been done successfully" > result.txt
       - run:
