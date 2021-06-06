@@ -144,7 +144,6 @@ jobs:
               --tags project=circleci94 \
                --stack-name "backendstack-circleci94" \
                --parameter-overrides ID="circleci94"  
-              exit 1
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -153,7 +152,6 @@ jobs:
               --tags project=circleci94 \
               --stack-name "frontendstack-circleci94" \
               --parameter-overrides ID="circleci94"  
-              exit 1
       - run:
           name: Add back-end ip to ansible inventory
           command: |
