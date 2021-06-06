@@ -10,6 +10,17 @@
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
+    
+- name: "Install env variables"
+  environment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: postgres
+    TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
+    TYPEORM_HOST: circleciprod.cx0zwqwoxj01.us-east-1.rds.amazonaws.com
+    TYPEORM_PORT: 5432
+    TYPEORM_USERNAME: postgres
+    TYPEORM_PASSWORD: circleci123
+    TYPEORM_DATABASE: circleciprod
 
 - name: "install pm2"
   become: true
