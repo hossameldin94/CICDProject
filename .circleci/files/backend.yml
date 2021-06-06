@@ -29,7 +29,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: circleCI
-      ImageId: ami-08353a25e80beea3e 
+      ImageId: ami-09e67e426f25ce0d7 
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
