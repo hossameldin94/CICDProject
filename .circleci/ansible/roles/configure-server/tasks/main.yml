@@ -12,7 +12,7 @@
     update_cache: yes
     
 - name: Get env file content
-  shell: . /root/project/.circleci/backend/.env && env
+  shell: . /root/project/backend/.env && env
   register: env_file_result
 
 - name: Parse environment
