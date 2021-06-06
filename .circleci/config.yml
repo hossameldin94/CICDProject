@@ -185,16 +185,16 @@ jobs:
       - run:
           name: Configure server
           command: |
-            echo "NODE_ENV=local" >> backend/.env
-            echo "VERSION=1" >> backend/.env
-            echo ${ENVIRONMENT} >> backend/.env
-            echo ${TYPEORM_CONNECTION} >> backend/.env
-            echo ${TYPEORM_ENTITIES} >> backend/.env
-            echo ${TYPEORM_HOST} >> backend/.env
-            echo ${TYPEORM_PORT} >> backend/.env
-            echo ${TYPEORM_USERNAME} >> backend/.env
-            echo ${TYPEORM_PASSWORD} >> backend/.env
-            echo ${TYPEORM_DATABASE} >> backend/.env
+            echo "NODE_ENV=local" >> .circleci/backend/.env
+            echo "VERSION=1" >> .circleci/backend/.env
+            echo ${ENVIRONMENT} >> .circleci/backend/.env
+            echo ${TYPEORM_CONNECTION} >> .circleci/backend/.env
+            echo ${TYPEORM_ENTITIES} >> .circleci/backend/.env
+            echo ${TYPEORM_HOST} >> .circleci/backend/.env
+            echo ${TYPEORM_PORT} >> .circleci/backend/.env
+            echo ${TYPEORM_USERNAME} >> .circleci/backend/.env
+            echo ${TYPEORM_PASSWORD} >> .circleci/backend/.env
+            echo ${TYPEORM_DATABASE} >> .circleci/backend/.env
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure   
   run-migrations:
