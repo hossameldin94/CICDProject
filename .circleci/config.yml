@@ -10,11 +10,14 @@ commands:
       when:
         type: string
     steps:
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Destroy
           command: |
             aws cloudformation delete-stack --stack-name backend-circleci94
             aws cloudformation delete-stack --stack-name frontend-circleci94
+          when: on_fail
            
 jobs:
   notify:
@@ -201,8 +204,6 @@ jobs:
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
       - checkout
-      - aws-cli/setup:
-          profile-name: default
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
       - attach_workspace:
@@ -223,8 +224,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - aws-cli/setup:
-          profile-name: default
       - run:
           name: Run migrations
           command: |
@@ -251,8 +250,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - aws-cli/setup:
-          profile-name: default
       - attach_workspace:
           at: /root
       - run:
@@ -284,8 +281,6 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - aws-cli/setup:
-          profile-name: default
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
       - run:
