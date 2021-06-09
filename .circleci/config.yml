@@ -249,8 +249,7 @@ jobs:
       - run:
           name: Install tar utility
           command: |
-            yum install -y tar gzip
-            apk add nodejs npm
+            yum install -y tar gzip nodejs
       - attach_workspace:
           at: /root
       - run:
@@ -280,12 +279,6 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
-      - run:
-          name: Install tar utility
-          command: |
-            sudo apt-get update -y
-            sudo apt-get update -y yum
-            yum install -y tar gzip
       - attach_workspace:
           at: /root
       - run:
