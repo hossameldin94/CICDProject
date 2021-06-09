@@ -251,9 +251,15 @@ jobs:
           command: |
             yum install -y tar gzip
       - attach_workspace:
-          at: /root
+          at: /root 
       - run:
-          name: Install dependencies
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
           command: |
             yum update
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
@@ -264,15 +270,6 @@ jobs:
             node -v
             cd frontend
             npm i
-      - run:
-          name: Get backend url
-          command: |
-            BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Deploy frontend objects
-          command: |
             npm run build
             ls -l
             aws s3 cp ./dist "s3://udapeople-circleci94" --recursive
