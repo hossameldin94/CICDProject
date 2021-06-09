@@ -252,6 +252,10 @@ jobs:
             yum install -y tar gzip
             yum update
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+            
+      - run:
+          name: Install Node
+          command: |
             command -v nvm
             nvm install node
             node -v
