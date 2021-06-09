@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.4.2
+  aws-cli: circleci/aws-cli@2.0
 
 commands:
   destroy_environment:
@@ -200,6 +201,8 @@ jobs:
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
       - attach_workspace:
@@ -220,6 +223,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Run migrations
           command: |
@@ -246,6 +251,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - attach_workspace:
           at: /root
       - run:
@@ -277,6 +284,8 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
       - run:
@@ -329,6 +338,10 @@ workflows:
       - deploy-backend:
           requires:
             - run-migrations
+          context:
+            - udapeople
       - deploy-frontend:
           requires:
             - run-migrations
+          context:
+            - udapeople
