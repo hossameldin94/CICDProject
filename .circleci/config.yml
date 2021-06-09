@@ -220,7 +220,10 @@ jobs:
           command: |
             if grep -q "has been done successfully" result.txt 
             then 
-              curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "1" https://api.memstash.io/values/migrations-circleci94        
+              curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "1" https://api.memstash.io/values/migrations-circleci94
+            else
+              curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "0" https://api.memstash.io/values/migrations-circleci94
+            fi
      # Here's where you will add some code to rollback on failure 
   deploy-frontend:
     docker:
