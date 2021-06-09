@@ -2,6 +2,18 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.4.2
+
+commands:
+  destroy_environment:
+    parameters:
+      when:
+        type: string
+    steps:
+      - run:
+          name: Destroy
+          command: |
+            aws cloudformation delete-stack --stack-name backend-circleci94
+            aws cloudformation delete-stack --stack-name frontend-circleci94
            
 jobs:
   notify:
@@ -200,6 +212,8 @@ jobs:
           name: Configure server
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
+      - destroy_environment:
+          when: on_fail
       # Here's where you will add some code to rollback on failure   
   run-migrations:
     docker:
@@ -224,6 +238,8 @@ jobs:
             else
               curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "0" https://api.memstash.io/values/migrations-circleci94
             fi
+      - destroy_environment:
+          when: on_fail
      # Here's where you will add some code to rollback on failure 
   deploy-frontend:
     docker:
@@ -232,6 +248,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: /root
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
       - run:
           name: Install dependencies
           command: |
@@ -248,9 +268,10 @@ jobs:
           command: |
             npm run build
             ls -l
-            aws s3 cp ./dist "s3://udapeople-circleci94"
-      # Here's where you will add some code to rollback on failure      
-                  
+            aws s3 cp ./dist "s3://udapeople-circleci94" --recursive
+      # Here's where you will add some code to rollback on failure     
+      - destroy_environment:
+          when: on_fail            
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -258,6 +279,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
       - attach_workspace:
           at: /root
       - run:
@@ -269,7 +294,8 @@ jobs:
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-server.yml
       # Here's where you will add some code to rollback on failure  
-
+      - destroy_environment:
+          when: on_fail
 workflows:
   default:
     jobs:
