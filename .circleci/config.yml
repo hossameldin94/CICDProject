@@ -162,11 +162,14 @@ jobs:
             aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> .circleci/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
+            aws ec2 describe-instances \
+                --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --output text >> .circleci/ansible/backendIP.txt
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+            - project/.circleci/ansible/backendIP.txt
       # Here's where you will add some code to rollback on failure  
 
   configure-infrastructure:
@@ -215,9 +218,54 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
-            if [ "$(grep -c "has been done successfully" result.txt)" -ge 3 ]; then curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "1" https://api.memstash.io/values/migrations-circleci94        
+            if grep -q "has been done successfully" result.txt 
+            then 
+              curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "1" https://api.memstash.io/values/migrations-circleci94        
      # Here's where you will add some code to rollback on failure 
-            
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /root
+      - run:
+          name: Install dependencies
+          command: |
+            cd frontend
+            npm i
+      - run:
+          name: Get backend url
+          command: |
+            BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            npm run build
+            ls -l
+            aws s3 cp ./dist "s3://udapeople-circleci94"
+      # Here's where you will add some code to rollback on failure      
+                  
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["eb:8c:c3:a9:4b:36:3f:c7:69:df:e2:36:d3:22:f5:ed"]
+      - attach_workspace:
+          at: /root
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Deploy backend
+          command: |
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-server.yml
+      # Here's where you will add some code to rollback on failure  
 
 workflows:
   default:
@@ -249,3 +297,9 @@ workflows:
           requires: [configure-infrastructure]
           context:
             - udapeople
+      - deploy-backend:
+          requires:
+            - run-migrations
+      - deploy-frontend:
+          requires:
+            - run-migrations
