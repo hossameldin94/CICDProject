@@ -251,10 +251,10 @@ jobs:
           command: |
             yum install -y tar gzip
             yum update
-            yum install epel-release
-            yum install nodejs
-            node --version
-            yum install npm
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+            command -v nvm
+            nvm install node
+            node -v
       - attach_workspace:
           at: /root
       - run:
