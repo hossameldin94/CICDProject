@@ -10,8 +10,6 @@ commands:
       when:
         type: string
     steps:
-      - aws-cli/setup:
-          profile-name: default
       - run:
           name: Destroy
           command: |
@@ -187,6 +185,8 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/.circleci/ansible/backendIP.txt
       # Here's where you will add some code to rollback on failure  
+      - destroy_environment:
+          when: on_fail
 
   configure-infrastructure:
     docker:
@@ -216,8 +216,6 @@ jobs:
           name: Configure server
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
-      - destroy_environment:
-          when: on_fail
       # Here's where you will add some code to rollback on failure   
   run-migrations:
     docker:
@@ -242,8 +240,6 @@ jobs:
             else
               curl -H "Content-Type: text/plain" -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request PUT --data "0" https://api.memstash.io/values/migrations-circleci94
             fi
-      - destroy_environment:
-          when: on_fail
      # Here's where you will add some code to rollback on failure 
   deploy-frontend:
     docker:
@@ -298,8 +294,6 @@ jobs:
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-server.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy_environment:
-          when: on_fail
 workflows:
   default:
     jobs:
