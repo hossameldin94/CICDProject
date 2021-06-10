@@ -3,18 +3,18 @@
     become: yes
     synchronize:
       src: /root/project/backend/dist
-      dest: /home/ubuntu/udapeople-circle94
+      dest: ./udapeople-circle94
       recursive: true
 
   - name: "move node modules"
     become: yes
     synchronize:
       src: /root/project/backend/node_modules
-      dest: /home/ubuntu/udapeople-circle94
+      dest: ./udapeople-circle94
       recursive: true
 
   - name: "run server"
     become: true
     command: pm2 start -f ./main.js
     args:
-      chdir: /home/ubuntu/udapeople-circle94/dist
+      chdir: ./udapeople-circle94/dist
