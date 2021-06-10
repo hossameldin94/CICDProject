@@ -79,7 +79,7 @@ jobs:
              pwd
              ls
       - persist_to_workspace: #to avoid install node on python image i am going to presist the built dlls
-          root: .
+          root: ~/
           paths:
             - project/backend/dist
       - slack/notify:
