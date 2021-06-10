@@ -76,10 +76,11 @@ jobs:
              cd backend
              npm i
              npm run build
+             pwd
       - persist_to_workspace: #to avoid install node on python image i am going to presist the built dlls
           root: .
           paths:
-            - backend/dist
+            - project/backend/dist
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
@@ -296,6 +297,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            ls /root/project/backend/
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
 workflows:
