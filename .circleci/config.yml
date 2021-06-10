@@ -80,7 +80,7 @@ jobs:
       - persist_to_workspace: #to avoid install node on python image i am going to presist the built dlls
           root: .
           paths:
-            - project/backend/dist
+            - /home/circleci/project/backend/dist
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
