@@ -13,6 +13,7 @@ commands:
       - run:
           name: Destroy
           command: |
+            aws s3 rm s3://udapeople-circleci94 --recursive
             aws cloudformation delete-stack --stack-name backendstack-circleci94
             aws cloudformation delete-stack --stack-name frontendstack-circleci94
           when: on_fail
@@ -305,20 +306,20 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context: udapeople
+      # - build-frontend:
+      #     context: udapeople
       - build-backend:
           context: udapeople
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
       - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          requires: [build-backend] #  requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           context:
             - udapeople
           filters:
