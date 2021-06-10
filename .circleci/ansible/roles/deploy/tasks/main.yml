@@ -3,7 +3,9 @@
     become: yes
     connection: local
     package:
-      name: rsync
+      name: 
+        - openssh
+        - rsync
       state: present
       
   - name: "move files to server"
