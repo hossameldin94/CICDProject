@@ -304,6 +304,36 @@ jobs:
             ls /root/project/backend/
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11 
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /root
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update curl
+            pip install awscli 
+      - run:
+          name: Backend smoke test.
+          command: |
+            BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            curl "https://$BACKEND_URL/api/status"
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-circleci94.s3-website-us-east-1.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+      - destroy_environment:
+          when: on_fail
+      # Here's where you will add some code to rollback on failure
 workflows:
   default:
     jobs:
@@ -344,3 +374,5 @@ workflows:
             - run-migrations
           context:
             - udapeople
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
