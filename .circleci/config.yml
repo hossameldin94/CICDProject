@@ -359,9 +359,9 @@ jobs:
             URL="http://udapeople-circleci94.s3-website-us-east-1.amazonaws.com"
             if curl -s ${URL} | grep "Welcome"
             then
-              return 1
-            else
               return 0
+            else
+              return 1
             fi
       - revert_migrations:
           when: on_fail
