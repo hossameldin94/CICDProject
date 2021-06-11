@@ -350,7 +350,7 @@ jobs:
             ls 
             pwd
             cat /root/project/.circleci/ansible/backendIP.txt
-            export BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            BACKEND_IP=`cat /root/project/.circleci/ansible/backendIP.txt`
             echo $BACKEND_IP
             curl "http://$BACKEND_IP:3030/api/status"
       - run:
