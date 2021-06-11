@@ -341,7 +341,7 @@ jobs:
             cat /root/project/.circleci/ansible/backendIP.txt
             export BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
             echo BACKEND_IP
-            curl "https://$BACKEND_URL/api/status"
+            curl "http://$BACKEND_IP:3030/api/status"
       - run:
           name: Frontend smoke test.
           command: |
