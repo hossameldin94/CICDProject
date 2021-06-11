@@ -17,6 +17,23 @@ commands:
             aws cloudformation delete-stack --stack-name backendstack-circleci94
             aws cloudformation delete-stack --stack-name frontendstack-circleci94
           when: on_fail
+
+  revert_migrations:
+    parameters:
+      when:
+        type: string
+    steps:
+      - run:
+          name: revert
+          command: |
+            STATUS=$(curl -H "token: 1923c2c7-45cc-47b6-983f-d027069a3d6c" --request GET https://api.memstash.io/values/migrations-circleci94)
+            echo $STATUS
+            if [[ "$STATUS" == "0" ]]
+            then
+              cd backend
+              npm run migrations:revert
+            fi
+          when: on_fail
            
 jobs:
   notify:
@@ -319,7 +336,8 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            export BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            echo $BACKEND_IP
             curl "https://$BACKEND_URL/api/status"
       - run:
           name: Frontend smoke test.
@@ -331,7 +349,7 @@ jobs:
             else
               return 0
             fi
-      - destroy_environment:
+      - revert_migrations:
           when: on_fail
       # Here's where you will add some code to rollback on failure
 workflows:
