@@ -186,7 +186,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=circleci \
+              --tags project=circleci-${CIRCLE_WORKFLOW_ID:0:7} \
                --stack-name "backendstack-${CIRCLE_WORKFLOW_ID:0:7}" \
                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
       - run:
@@ -194,7 +194,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags project=circleci \
+              --tags project=circleci-${CIRCLE_WORKFLOW_ID:0:7} \
               --stack-name "frontendstack-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
       - run:
@@ -202,9 +202,11 @@ jobs:
           command: |
             aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --filters "Name=tag:project,Values=circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text >> .circleci/ansible/inventory.txt
             aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --filters "Name=tag:project,Values=circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text >> .circleci/ansible/backendIP.txt
       - persist_to_workspace:
           root: ~/
@@ -284,6 +286,7 @@ jobs:
           name: Get backend url
           command: |
             BACKEND_IP=$(</root/project/.circleci/ansible/backendIP.txt)
+            echo $BACKEND_IP
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
@@ -388,7 +391,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
-              --tags project=circleci \
+              --tags project=circleci-${CIRCLE_WORKFLOW_ID:0:7} \
                --stack-name "cloudfront-${CIRCLE_WORKFLOW_ID:0:7}" \
                --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}"
       - revert_migrations:
