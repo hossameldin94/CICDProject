@@ -41,14 +41,17 @@ Resources:
   MyEIP:
     Type: AWS::EC2::EIP
     Properties:
-      InstanceId:
-        - Ref: EC2Instance
       Tags:
         - Key: Name
           Value: !Sub EIP-${ID}
+  MyEIPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt MyEIP.AllocationId
+      InstanceId: !Ref EC2Instance
 Outputs:
-  EIP:
-    Value: !GetAtt MyEIP.PublicIp
-    Description: URL for website hosted on S3
+  EIPAddress:
+    Value: !Ref MyEIP
+    Description: URL for ELASTIC attached to EC2
     Export:
       Name: EIP
