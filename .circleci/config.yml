@@ -204,10 +204,11 @@ jobs:
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:project,Values=circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --output text >> .circleci/ansible/inventory.txt
-            aws ec2 describe-instances \
-                --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --filters "Name=tag:project,Values=circleci-${CIRCLE_WORKFLOW_ID:0:7}" \
-                --output text >> .circleci/ansible/backendIP.txt
+            EIP=$(aws cloudformation \
+              list-exports --query "Exports[?Name==\`EIP\`].Value" \
+              --no-paginate --output text)
+            echo $EIP
+            echo $EIP >> .circleci/ansible/backendIP.txt
       - persist_to_workspace:
           root: ~/
           paths:
