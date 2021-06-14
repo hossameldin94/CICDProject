@@ -54,4 +54,4 @@ Outputs:
     Value: !Ref MyEIP
     Description: URL for ELASTIC attached to EC2
     Export:
-      Name: EIP
+      Name: !Sub EIP-${ID}
